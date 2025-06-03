@@ -11,7 +11,7 @@
     <groupId>com.clumsycoder</groupId>
     <artifactId>NucleusService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>NucleusService</name>
+    <name>nucleus-service</name>
     <description>NucleusService</description>
     <licenses>
         <license>
