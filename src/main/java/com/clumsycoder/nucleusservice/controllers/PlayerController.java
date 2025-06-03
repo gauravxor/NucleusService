@@ -2,10 +2,9 @@ package com.clumsycoder.nucleusservice.controllers;
 
 import com.clumsycoder.controlshift.commons.exceptions.ResourceNotFoundException;
 import com.clumsycoder.controlshift.commons.response.ApiResponse;
-import com.clumsycoder.nucleusservice.dto.common.PlayerDataResponse;
+import com.clumsycoder.nucleusservice.dto.common.PlayerData;
 import com.clumsycoder.nucleusservice.dto.request.CreatePlayerRequest;
-import com.clumsycoder.nucleusservice.dto.request.PlayerUpdateRequest;
-import com.clumsycoder.nucleusservice.dto.response.PlayerAuthResponse;
+import com.clumsycoder.nucleusservice.dto.request.UpdatePlayerRequest;
 import com.clumsycoder.nucleusservice.models.Player;
 import com.clumsycoder.nucleusservice.service.PlayerService;
 import jakarta.validation.Valid;
@@ -40,10 +39,13 @@ public class PlayerController {
             throw new ResourceNotFoundException("Player does not exist");
         }
         Player player = playerOpt.get();
-        PlayerDataResponse responseDto = new PlayerDataResponse(
+        PlayerData responseDto = new PlayerData(
                 player.getId(),
                 player.getEmail(),
-                player.isEmailVerified()
+                player.getFirstName(),
+                player.getLastName(),
+                player.getUsername(),
+                player.getDateOfBirth()
         );
         ApiResponse response = new ApiResponse()
                 .message("Player found")
@@ -51,44 +53,31 @@ public class PlayerController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{email}/auth")
-    public ResponseEntity<PlayerAuthResponse> getPlayerByEmail(@PathVariable String email) {
-        Optional<Player> playerOpt = playerService.getPlayerByEmail(email);
-        if (playerOpt.isEmpty()) {
-            throw new ResourceNotFoundException("Player does not exist");
-        }
-
-        Player player = playerOpt.get();
-
-        PlayerAuthResponse response = new PlayerAuthResponse(
-                player.getId(),
-                player.getEmail(),
-                player.getPassword(),
-                player.isEmailVerified()
-        );
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     @PostMapping
-    public ResponseEntity<PlayerDataResponse> createPlayer(@Valid @RequestBody CreatePlayerRequest request) {
+    public ResponseEntity<PlayerData> createPlayer(@Valid @RequestBody CreatePlayerRequest request) {
         Player newPlayer = playerService.createPlayer(request);
-        PlayerDataResponse responseDto = new PlayerDataResponse(
-                newPlayer.getId(),
-                newPlayer.getEmail(),
-                newPlayer.isEmailVerified()
-        );
-        return new ResponseEntity<>(responseDto, HttpStatus.CREATED);
+
+        PlayerData playerDataResponse = new PlayerData();
+        playerDataResponse.setId(newPlayer.getId());
+        playerDataResponse.setEmail(newPlayer.getEmail());
+        playerDataResponse.setFirstName(newPlayer.getFirstName());
+        playerDataResponse.setLastName(newPlayer.getLastName());
+        playerDataResponse.setUsername(newPlayer.getUsername());
+        playerDataResponse.setDateOfBirth(newPlayer.getDateOfBirth());
+        return new ResponseEntity<>(playerDataResponse, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponse> updatePlayer(@PathVariable String id, @RequestBody PlayerUpdateRequest request) {
+    public ResponseEntity<ApiResponse> updatePlayer(@PathVariable String id, @RequestBody UpdatePlayerRequest request) {
 
         Player updatedPlayer = playerService.updatePlayer(id, request);
-        PlayerDataResponse responseDto = new PlayerDataResponse(
+        PlayerData responseDto = new PlayerData(
                 updatedPlayer.getId(),
                 updatedPlayer.getEmail(),
-                updatedPlayer.isEmailVerified()
+                updatedPlayer.getFirstName(),
+                updatedPlayer.getLastName(),
+                updatedPlayer.getUsername(),
+                updatedPlayer.getDateOfBirth()
         );
         ApiResponse response = new ApiResponse()
                 .message("Player updated")

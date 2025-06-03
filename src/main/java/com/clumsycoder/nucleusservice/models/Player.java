@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 @Entity
 @Table(
@@ -20,9 +21,11 @@ import java.time.Instant;
         schema = "public",
         indexes = {
                 @Index(name = "idx_player_id", columnList = "id"),
+                @Index(name = "idx_player_username", columnList = "username"),
                 @Index(name = "idx_player_email", columnList = "email")
         },
         uniqueConstraints = {
+                @UniqueConstraint(name = "uc_player_username", columnNames = {"username"}),
                 @UniqueConstraint(name = "uc_player_email", columnNames = {"email"})
         })
 @Getter
@@ -32,14 +35,20 @@ public class Player {
     @Id
     private String id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
+    private String firstName;
+
+    @Column
+    private String lastName;
+
+    @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false)
     private String email;
 
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
-    private boolean isEmailVerified;
+    @Column
+    private LocalDate dateOfBirth;
 
     @Column(nullable = false)
     private Instant createdAt;
@@ -58,6 +67,5 @@ public class Player {
     @PreUpdate
     public void preUpdate() {
         updatedAt = Instant.now();
-
     }
 }

@@ -4,7 +4,7 @@ import com.clumsycoder.controlshift.commons.exceptions.DatabaseException;
 import com.clumsycoder.controlshift.commons.exceptions.DuplicateResourceException;
 import com.clumsycoder.controlshift.commons.exceptions.ResourceNotFoundException;
 import com.clumsycoder.nucleusservice.dto.request.CreatePlayerRequest;
-import com.clumsycoder.nucleusservice.dto.request.PlayerUpdateRequest;
+import com.clumsycoder.nucleusservice.dto.request.UpdatePlayerRequest;
 import com.clumsycoder.nucleusservice.models.Player;
 import com.clumsycoder.nucleusservice.repositories.PlayerRepository;
 import lombok.AllArgsConstructor;
@@ -18,28 +18,27 @@ import java.util.Optional;
 @AllArgsConstructor
 public class PlayerService {
     private final PlayerRepository playerRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public Optional<Player> getPlayerById(String playerId) {
         return playerRepository.findById(playerId);
     }
 
-    public Optional<Player> getPlayerByEmail(String email) {
-        return playerRepository.findByEmail(email);
-    }
-
     public Player createPlayer(CreatePlayerRequest request) {
         try {
             Player player = new Player();
+            player.setFirstName(request.getFirstName());
+            player.setLastName(request.getLastName());
+            player.setUsername(request.getUsername());
             player.setEmail(request.getEmail());
-            player.setPassword(passwordEncoder.encode(request.getPassword()));
+            player.setDateOfBirth(request.getDateOfBirth());
+
             return playerRepository.save(player);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateResourceException("Player already exist");
         }
     }
 
-    public Player updatePlayer(String playerId, PlayerUpdateRequest request) {
+    public Player updatePlayer(String playerId, UpdatePlayerRequest request) {
         Optional<Player> playerOpt = playerRepository.findById(playerId);
         if (playerOpt.isEmpty()) {
             throw new ResourceNotFoundException("Player does not exist.");
@@ -47,10 +46,17 @@ public class PlayerService {
 
         Player player = playerOpt.get();
 
-        if (request.getEmail() != null)
-            player.setEmail(request.getEmail());
+        if (request.getFirstName() != null)
+            player.setFirstName(request.getFirstName());
 
-        player.setEmailVerified(request.getIsEmailVerified());
+        if (request.getLastName() != null)
+            player.setLastName(request.getLastName());
+
+        if (request.getUsername() != null)
+            player.setUsername(request.getUsername());
+
+        if (request.getDateOfBirth() != null)
+            player.setDateOfBirth(request.getDateOfBirth());
 
         try {
             playerRepository.save(player);
