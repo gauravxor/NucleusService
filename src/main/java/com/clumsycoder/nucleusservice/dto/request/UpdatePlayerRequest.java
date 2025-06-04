@@ -16,7 +16,7 @@ public class UpdatePlayerRequest {
     @Size(min = 2, max = 50, message = "First name must be between 2 - 50 characters")
     private String firstName;
 
-    @Size(min = 2, max = 50, message = "Last must be between 2 - 50 characters")
+    @Size(min = 2, max = 50, message = "Last name must be between 2 - 50 characters")
     private String lastName;
 
     @Size(min = 3, max = 10, message = "Username must be between 3 - 10 characters")
