@@ -1,7 +1,7 @@
 package com.clumsycoder.nucleusservice.controllers;
 
 import com.clumsycoder.controlshift.commons.response.ApiResponse;
-import com.clumsycoder.nucleusservice.dto.common.PlayerData;
+import com.clumsycoder.nucleusservice.dto.PlayerData;
 import com.clumsycoder.nucleusservice.dto.request.CreatePlayerRequest;
 import com.clumsycoder.nucleusservice.dto.request.UpdatePlayerRequest;
 import com.clumsycoder.nucleusservice.models.Player;
@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/player")
@@ -43,9 +42,6 @@ public class PlayerController {
                 player.getUsername(),
                 player.getDateOfBirth()
         );
-//        ApiResponse response = new ApiResponse()
-//                .message("Player found")
-//                .data(Map.of("player", responseDto));
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
