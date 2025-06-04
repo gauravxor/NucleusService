@@ -1,6 +1,5 @@
 package com.clumsycoder.nucleusservice.controllers;
 
-import com.clumsycoder.controlshift.commons.exceptions.ResourceNotFoundException;
 import com.clumsycoder.controlshift.commons.response.ApiResponse;
 import com.clumsycoder.nucleusservice.dto.common.PlayerData;
 import com.clumsycoder.nucleusservice.dto.request.CreatePlayerRequest;
@@ -33,12 +32,9 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse> getPlayer(@PathVariable String id) {
-        Optional<Player> playerOpt = playerService.getPlayerById(id);
-        if (playerOpt.isEmpty()) {
-            throw new ResourceNotFoundException("Player does not exist");
-        }
-        Player player = playerOpt.get();
+    public ResponseEntity<PlayerData> getPlayer(@PathVariable String id) {
+        Player player = playerService.getPlayer(id);
+
         PlayerData responseDto = new PlayerData(
                 player.getId(),
                 player.getEmail(),
@@ -47,10 +43,10 @@ public class PlayerController {
                 player.getUsername(),
                 player.getDateOfBirth()
         );
-        ApiResponse response = new ApiResponse()
-                .message("Player found")
-                .data(Map.of("player", responseDto));
-        return new ResponseEntity<>(response, HttpStatus.OK);
+//        ApiResponse response = new ApiResponse()
+//                .message("Player found")
+//                .data(Map.of("player", responseDto));
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PostMapping

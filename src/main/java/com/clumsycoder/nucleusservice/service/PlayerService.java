@@ -19,8 +19,9 @@ import java.util.Optional;
 public class PlayerService {
     private final PlayerRepository playerRepository;
 
-    public Optional<Player> getPlayerById(String playerId) {
-        return playerRepository.findById(playerId);
+    public Player getPlayer(String playerId) {
+        return playerRepository.findById(playerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Player does not exist."));
     }
 
     public Player createPlayer(CreatePlayerRequest request) {
