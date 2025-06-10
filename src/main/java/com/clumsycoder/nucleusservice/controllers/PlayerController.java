@@ -1,6 +1,7 @@
 package com.clumsycoder.nucleusservice.controllers;
 
 import com.clumsycoder.controlshift.commons.response.ApiResponse;
+import com.clumsycoder.controlshift.commons.response.ApiResult;
 import com.clumsycoder.nucleusservice.dto.PlayerData;
 import com.clumsycoder.nucleusservice.dto.request.CreatePlayerRequest;
 import com.clumsycoder.nucleusservice.dto.request.UpdatePlayerRequest;
@@ -27,14 +28,13 @@ import java.util.Map;
 @AllArgsConstructor
 public class PlayerController {
     private static final Logger logger = LoggerFactory.getLogger(PlayerController.class);
-
     private final PlayerService playerService;
 
     @GetMapping("/{id}")
     public ResponseEntity<PlayerData> getPlayer(@PathVariable String id) {
         Player player = playerService.getPlayer(id);
 
-        PlayerData responseDto = new PlayerData(
+        PlayerData data = new PlayerData(
                 player.getId(),
                 player.getEmail(),
                 player.getFirstName(),
@@ -42,38 +42,43 @@ public class PlayerController {
                 player.getUsername(),
                 player.getDateOfBirth()
         );
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        return new ResponseEntity<>(data, HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<PlayerData> createPlayer(@Valid @RequestBody CreatePlayerRequest request) {
         Player newPlayer = playerService.createPlayer(request);
 
-        PlayerData playerDataResponse = new PlayerData();
-        playerDataResponse.setId(newPlayer.getId());
-        playerDataResponse.setEmail(newPlayer.getEmail());
-        playerDataResponse.setFirstName(newPlayer.getFirstName());
-        playerDataResponse.setLastName(newPlayer.getLastName());
-        playerDataResponse.setUsername(newPlayer.getUsername());
-        playerDataResponse.setDateOfBirth(newPlayer.getDateOfBirth());
-        return new ResponseEntity<>(playerDataResponse, HttpStatus.CREATED);
+        PlayerData playerData = new PlayerData(
+                newPlayer.getId(),
+                newPlayer.getEmail(),
+                newPlayer.getFirstName(),
+                newPlayer.getLastName(),
+                newPlayer.getUsername(),
+                newPlayer.getDateOfBirth()
+        );
+
+        return new ResponseEntity<>(playerData, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse> updatePlayer(@PathVariable String id, @RequestBody UpdatePlayerRequest request) {
 
-        Player updatedPlayer = playerService.updatePlayer(id, request);
-        PlayerData responseDto = new PlayerData(
-                updatedPlayer.getId(),
-                updatedPlayer.getEmail(),
-                updatedPlayer.getFirstName(),
-                updatedPlayer.getLastName(),
-                updatedPlayer.getUsername(),
-                updatedPlayer.getDateOfBirth()
+        Player updatedPlayerData = playerService.updatePlayer(id, request);
+
+        PlayerData playerData = new PlayerData(
+                updatedPlayerData.getId(),
+                updatedPlayerData.getEmail(),
+                updatedPlayerData.getFirstName(),
+                updatedPlayerData.getLastName(),
+                updatedPlayerData.getUsername(),
+                updatedPlayerData.getDateOfBirth()
         );
-        ApiResponse response = new ApiResponse()
+
+        ApiResult response = new ApiResult()
                 .message("Player updated")
-                .data(Map.of("player", responseDto));
+                .data(Map.of("player", playerData));
+
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
