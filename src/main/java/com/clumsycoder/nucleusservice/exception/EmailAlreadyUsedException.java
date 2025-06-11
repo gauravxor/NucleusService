@@ -1,6 +1,7 @@
 package com.clumsycoder.nucleusservice.exception;
 
 import com.clumsycoder.nucleusservice.constants.ErrorMessages;
+import com.clumsycoder.nucleusservice.exception.base.NucleusServiceException;
 
 public class EmailAlreadyUsedException extends NucleusServiceException {
     public EmailAlreadyUsedException() {

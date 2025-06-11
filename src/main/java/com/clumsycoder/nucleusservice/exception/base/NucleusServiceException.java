@@ -1,4 +1,4 @@
-package com.clumsycoder.nucleusservice.exception;
+package com.clumsycoder.nucleusservice.exception.base;
 
 import com.clumsycoder.nucleusservice.constants.ErrorMessages;
 
